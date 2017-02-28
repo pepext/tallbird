@@ -20,13 +20,13 @@ var file = './nodos.json';
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static('public'));
 
-function tira(entrada,rel)
+function tira(entrada,rel)//sigue el curso de una fibra
 {for (var i=0; i<entrada.length;i++)
   	{if(entrada[i].dest==rel)
   		{
   			rel=entrada[i].orig;
-  			console.log(rel); dreams.push(rel);
-  			i=0;
+  			dreams.push(rel);
+  			i=0;//porque si existe conexión, solo puede ser una
   		}
   	}
 
@@ -34,29 +34,26 @@ function tira(entrada,rel)
 
 function rel0(cto){
   
-    dreams.push(cto);
-  console.log(dreams);
-  
-  var obj=jsonfile.readFileSync(file);
+  dreams.push(cto);
+    
+  var obj=jsonfile.readFileSync(file);//para qué tanta lectura, lo hago global?
   //console.dir(obj);
   var rela=obj.rel;
   var cou=0, rel1=0;
   
   for (var i=0; i<rela.length;i++)
-  	{if(rela[i].dest==cto)
+  	{if(rela[i].dest==cto)//está siendo alimentada
   		{cou++; 
         rel1= rela[i].orig;
-        console.log('\n'+rel1); dreams.push(rel1);
-  			tira(rela,rel1);
+       var msg=util.format('splitter %d:',cou);
+       dreams.push(msg);
+        dreams.push(rel1);
+  			tira(rela,rel1);//seguir la tirada
   		}
   	}
-  	if (cou==0) {
-      console.log('\nValor no registrado');
-      dreams.push('Valor no registrado');}
-    else {var msg=util.format('\n%d 2ndSplit',cou);
-      console.log(msg);
-       dreams.push(msg);
-    }
+  //En el caso de CTO vamos a saber el número se 2ndSplit
+  	if (cou==0) {dreams.push('Valor no registrado');}//servirá para depurar la tabla automáticamente
+    else {  msg=util.format('splitter %d:',cou); dreams.push(cou);   }
 }
 // http://expressjs.com/en/starter/basic-routing.html
 app.get("/", function (request, response) {
